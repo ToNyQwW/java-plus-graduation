@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: stats
       POSTGRES_PASSWORD: stats
     ports:
-      - "5432:5432"
+      - "5436:5432"
 
   ewm-db:
     image: postgres:16.1
@@ -17,4 +17,4 @@ services:
       POSTGRES_USER: main
       POSTGRES_PASSWORD: main
     ports:
-      - "5433:5432"
+      - "5437:5432"
