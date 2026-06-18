@@ -76,7 +76,7 @@
 
         <dependency>
             <groupId>ru.practicum</groupId>
-            <artifactId>stat-client</artifactId>
+            <artifactId>stats</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

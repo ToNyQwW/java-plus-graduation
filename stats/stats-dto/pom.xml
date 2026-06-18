@@ -5,23 +5,23 @@
 
     <parent>
         <groupId>ru.practicum</groupId>
-        <artifactId>stat-service</artifactId>
+        <artifactId>stats</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>stat-client</artifactId>
+    <artifactId>stats-dto</artifactId>
     <packaging>jar</packaging>
 
-    <name>stat-client</name>
+    <name>stats-dto</name>
 
     <dependencies>
         <dependency>
-            <groupId>ru.practicum</groupId>
-            <artifactId>stat-dto</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
         </dependency>
     </dependencies>
 

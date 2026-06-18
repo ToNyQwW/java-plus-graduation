@@ -9,15 +9,15 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>stat-service</artifactId>
+    <artifactId>stats</artifactId>
     <packaging>pom</packaging>
 
-    <name>stat-service</name>
+    <name>stats</name>
 
     <modules>
-        <module>stat-dto</module>
-        <module>stat-server</module>
-        <module>stat-client</module>
+        <module>stats-dto</module>
+        <module>stats-server</module>
+        <module>stats-client</module>
     </modules>
 
     <properties>
@@ -28,17 +28,17 @@
         <dependencies>
             <dependency>
                 <groupId>ru.practicum</groupId>
-                <artifactId>stat-dto</artifactId>
+                <artifactId>stats-dto</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ru.practicum</groupId>
-                <artifactId>stat-client</artifactId>
+                <artifactId>stats-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ru.practicum</groupId>
-                <artifactId>stat-server</artifactId>
+                <artifactId>stats-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
