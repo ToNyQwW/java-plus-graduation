@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.service.CategoryService;
-import ru.practicum.client.RestStatClient;
+import ru.practicum.client.StatClient;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.enums.EventState;
@@ -43,7 +43,7 @@ public class EventService {
     private final UserService userService;
     private final CategoryService categoryService;
     private final RequestService requestService;
-    private final RestStatClient restStatClient;
+    private final StatClient statClient;
 
     @Transactional
     public EventFullDto create(NewEventDto dto, long userId) {
@@ -334,7 +334,7 @@ public class EventService {
         List<String> uris = new ArrayList<>(Collections.emptyList());
         uris.add("/events/" + event.getId());
         try {
-            List<ViewStatsDto> viewStatsDtoMains = restStatClient.getAllStats(uris, false);
+            List<ViewStatsDto> viewStatsDtoMains = statClient.getAllStats(uris, false);
             if (!viewStatsDtoMains.isEmpty()) {
                 event.setViews(viewStatsDtoMains.getFirst().getHits());
             }
