@@ -23,9 +23,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
+
     private final CompilationRepository repository;
     private final EventRepository eventRepository;
+
     private final CompilationMapper mapper;
+
     private final EventUtils helper;
 
     @Override

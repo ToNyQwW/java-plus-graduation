@@ -26,9 +26,12 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
+
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneOffset.UTC);
-    private final EventRepository eventRepository;
+
     private final EventUtils helper;
+
+    private final EventRepository eventRepository;
 
     @Override
     @Transactional

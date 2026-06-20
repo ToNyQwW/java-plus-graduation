@@ -25,8 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
-    private final ParticipationRequestRepository requestRepository;
+
     private final ParticipationRequestMapper mapper;
+    private final ParticipationRequestRepository requestRepository;
+
     private final UserClientInternal userClient;
     private final EventClientInternal eventClient;
 
