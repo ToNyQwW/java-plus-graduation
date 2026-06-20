@@ -18,9 +18,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>core</module>
 		<module>stats</module>
 		<module>infra</module>
+		<module>core</module>
 	</modules>
 
 	<properties>
@@ -113,7 +113,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 
