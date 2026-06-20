@@ -3,6 +3,7 @@ package ru.practicum.server.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHitDto;
+import ru.practicum.dto.NewEndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.server.exception.BadRequestException;
 import ru.practicum.server.mapper.StatMapper;
@@ -24,7 +25,7 @@ public class StatService {
     private final StatMapper statMapper;
     private final StatRepository statRepository;
 
-    public void saveHit(EndpointHitDto hitDto) {
+    public void saveHit(NewEndpointHitDto hitDto) {
         EndpointHit hit = statMapper.toEntity(hitDto);
         statRepository.save(hit);
     }

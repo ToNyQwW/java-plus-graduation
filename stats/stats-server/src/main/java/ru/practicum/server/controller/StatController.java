@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHitDto;
+import ru.practicum.dto.NewEndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.server.service.StatService;
 
@@ -19,7 +20,7 @@ public class StatController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public void hit(@Valid @RequestBody EndpointHitDto hitDto) {
+    public void hit(@Valid @RequestBody NewEndpointHitDto hitDto) {
         log.info("Запрос на сохранение статистики: app={}, uri={}", hitDto.getApp(), hitDto.getUri());
         statService.saveHit(hitDto);
     }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.constants.DatePatternConstant;
 import ru.practicum.dto.EndpointHitDto;
+import ru.practicum.dto.NewEndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ public interface StatClient {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    EndpointHitDto hit(@RequestBody @Valid EndpointHitDto newEndpointHitDto) throws FeignException;
+    EndpointHitDto hit(@RequestBody @Valid NewEndpointHitDto newEndpointHitDto) throws FeignException;
 
     @GetMapping("/stats")
     List<ViewStatsDto> getStats(@RequestParam @DateTimeFormat(pattern = DatePatternConstant.DATE_TIME_PATTERN) LocalDateTime start,

@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.NewEndpointHitDto;
+import ru.practicum.dto.NewEndpointHitDto;
+import ru.practicum.client.StatClient;
 import ru.practicum.client.common.nonauthorized.EventClientNonauthorized;
-import ru.practicum.feing.StatsClient;
 import ru.practicum.service.EventService;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventSearchRequestUser;
@@ -28,7 +28,7 @@ import static ru.practicum.service.EventServiceImpl.DATE_TIME_FORMATTER;
 public class PublicEventController implements EventClientNonauthorized {
     private static final String APP_NAME = "main-service";
     private final EventService eventService;
-    private final StatsClient statsClient;
+    private final StatClient statsClient;
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

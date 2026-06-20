@@ -3,6 +3,7 @@ package ru.practicum.server.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.dto.EndpointHitDto;
+import ru.practicum.dto.NewEndpointHitDto;
 import ru.practicum.server.model.EndpointHit;
 
 import static ru.practicum.constants.DatePatternConstant.DATE_TIME_PATTERN;
@@ -11,5 +12,5 @@ import static ru.practicum.constants.DatePatternConstant.DATE_TIME_PATTERN;
 public interface StatMapper {
 
     @Mapping(target = "timestamp", source = "timestamp", dateFormat = DATE_TIME_PATTERN)
-    EndpointHit toEntity(EndpointHitDto dto);
+    EndpointHit toEntity(NewEndpointHitDto dto);
 }
