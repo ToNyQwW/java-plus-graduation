@@ -10,10 +10,10 @@ public class NewUserRequest {
 
     @Email
     @NotBlank
-    @Size(min = 6, max = 512)
+    @Size(min = 6, max = 254)
     private String email;
 
-    @Size(min = 2, max = 255)
+    @Size(min = 2, max = 250)
     @NotBlank
     private String name;
 }
