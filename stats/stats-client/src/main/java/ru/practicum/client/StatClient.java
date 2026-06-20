@@ -27,9 +27,4 @@ public interface StatClient {
                                 @RequestParam(required = false) List<String> uris,
                                 @RequestParam(defaultValue = "false") Boolean unique
     ) throws FeignException;
-
-    @GetMapping("/stats/all")
-    List<ViewStatsDto> getAllStats(@RequestParam(required = false) List<String> uris,
-                                   @RequestParam Boolean unique
-    ) throws FeignException;
 }

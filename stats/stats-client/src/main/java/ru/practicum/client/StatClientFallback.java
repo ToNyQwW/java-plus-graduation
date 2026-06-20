@@ -25,10 +25,4 @@ public class StatClientFallback implements StatClient {
         log.error("Fallback response: stats server is unavailable");
         return null;
     }
-
-    @Override
-    public List<ViewStatsDto> getAllStats(List<String> uris, Boolean unique) throws FeignException {
-        log.error("Fallback response: stats server is unavailable");
-        return null;
-    }
 }
