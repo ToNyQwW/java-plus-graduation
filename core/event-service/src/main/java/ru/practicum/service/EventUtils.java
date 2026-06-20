@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.ViewStatsDto;
-import ru.practicum.feing.StatsClient;
+import ru.practicum.dto.ViewStatsDto;
+import ru.practicum.client.StatClient;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.mapper.LocationMapper;
 import ru.practicum.model.Event;
@@ -47,13 +47,16 @@ public class EventUtils {
     private static final long MIN_HOURS_BETWEEN_EVENT_DATE_AND_PUBLISH_DATE = 1L;
     private static final long MIN_HOURS_FROM_NOW_TO_EVENT_DATE = 2L;
 
+    private final LocationMapper locationMapper;
+
     private final EventRepository eventRepository;
+
     private final UserClientInternal userClient;
-    private final CategoryClientInternal categoryClient;
     private final RequestClientInternal requestClient;
     private final CommentClientInternal commentClient;
-    private final StatsClient statsClient;
-    private final LocationMapper locationMapper;
+    private final CategoryClientInternal categoryClient;
+
+    private final StatClient statsClient;
 
     public Map<Long, Long> getEventIdToViewsCountMap(Set<Event> events) {
         List<String> uri = new ArrayList<>();
