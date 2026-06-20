@@ -5,12 +5,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.practicum.dto.category.CategoryDto;
-import ru.practicum.dto.category.NewCategoryDto;
-import ru.practicum.exception.NotFoundException;
 import ru.practicum.mapper.CategoryMapper;
 import ru.practicum.model.Category;
 import ru.practicum.repository.CategoryRepository;
+import ru.practicum.client.internal.EventClientInternal;
+import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.dto.category.NewCategoryDto;
+import ru.practicum.dto.event.EventInternalDto;
+import ru.practicum.exception.ConditionsConflictException;
+import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper mapper;
+    private final EventClientInternal eventClient;
 
     @Override
     @Transactional
@@ -35,7 +39,11 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(Long catId) {
         categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Категория с id " + catId + " не найдена"));
-
+        EventInternalDto eventInternalDto = eventClient.getExistingEventInternal(catId, null);
+        if(eventInternalDto != null) {
+            throw new ConditionsConflictException("Отказ в удалении категории с id = " + catId
+                    + ". Свяазанные события: "  + eventInternalDto.getId());
+        }
         categoryRepository.deleteById(catId);
     }
 

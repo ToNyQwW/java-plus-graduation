@@ -9,7 +9,6 @@ import ru.practicum.dto.category.NewCategoryDto;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CategoryMapper {
-
     CategoryDto mapCategoryToCategoryDto(Category category);
 
     @Mapping(target = "id", ignore = true)

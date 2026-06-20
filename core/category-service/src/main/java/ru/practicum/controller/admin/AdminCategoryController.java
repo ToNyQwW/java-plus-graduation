@@ -15,6 +15,7 @@ import ru.practicum.dto.category.NewCategoryDto;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/categories")
 public class AdminCategoryController implements CategoryClientAdmin {
+
     private final CategoryService categoryService;
 
     @PostMapping
