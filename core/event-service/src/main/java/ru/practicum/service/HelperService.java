@@ -43,7 +43,7 @@ import static ru.practicum.service.EventServiceImpl.DATE_TIME_FORMATTER;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EventUtils {
+public class HelperService {
     private static final long MIN_HOURS_BETWEEN_EVENT_DATE_AND_PUBLISH_DATE = 1L;
     private static final long MIN_HOURS_FROM_NOW_TO_EVENT_DATE = 2L;
 

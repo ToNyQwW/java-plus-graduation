@@ -29,7 +29,7 @@ public class EventServiceImpl implements EventService {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneOffset.UTC);
 
-    private final EventUtils helper;
+    private final HelperService helper;
 
     private final EventRepository eventRepository;
 
@@ -37,7 +37,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventFullDto create(Long userId, NewEventDto newEventDto) {
         LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(), DATE_TIME_FORMATTER);
-        EventUtils.checkEventDateIsValid(eventDate);
+        HelperService.checkEventDateIsValid(eventDate);
         Event event = eventRepository.save(EventMapper.mapToEvent(newEventDto, userId, eventDate));
         EventFullDto dto = helper.getEventFullDto(event);
         log.info("Создание события {}", dto);
@@ -46,11 +46,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventFullDto updateByUser(Long userId, Long eventId, UpdateEventUserRequest request) {
-
+    public EventFullDto updateByUser(EventUpdateCommand command) {
+        Long userId = command.getUserId();
+        Long eventId = command.getEventId();
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " не найдено"));
-        helper.updateEventFieldsFromUserRequest(request, event);
+        helper.updateEventFieldsFromUserRequest(command.getRequest(), event);
         Event eventSaved = eventRepository.save(event);
         EventFullDto dto = helper.getEventFullDto(eventSaved);
 
@@ -83,7 +84,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto getPublicEvent(Long eventId) {
         Event event = helper.getEvent(eventId);
-        EventUtils.checkEventIsPublished(event);
+        HelperService.checkEventIsPublished(event);
         EventFullDto dto = helper.getEventFullDto(event);
 
         log.info("Неавторизованный пользователь: Получено событие {}", dto);
@@ -100,10 +101,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> searchForAdmin(EventSearchRequestAdmin param) {
-        EventUtils.checkDates(param.getRangeStart(), param.getRangeEnd());
+        HelperService.checkDates(param.getRangeStart(), param.getRangeEnd());
         PageRequest page = PageRequest.of(param.getFrom() / param.getSize(), param.getSize());
 
-        Optional<Predicate> searchCriteriaOpt = EventUtils.getAdminSearchCriteria(param);
+        Optional<Predicate> searchCriteriaOpt = HelperService.getAdminSearchCriteria(param);
 
         Set<Event> events = searchCriteriaOpt.map(predicate -> eventRepository.findAll(predicate, page).toSet())
                 .orElseGet(() -> eventRepository.findAll(page).toSet());
@@ -113,9 +114,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> searchForUser(EventSearchRequestUser param) {
-        EventUtils.checkDates(param.getRangeStart(), param.getRangeEnd());
-        PageRequest page = EventUtils.getUserSearchPage(param);
-        Predicate searchCriteria = EventUtils.getUserSearchCriteria(param);
+        HelperService.checkDates(param.getRangeStart(), param.getRangeEnd());
+        PageRequest page = HelperService.getUserSearchPage(param);
+        Predicate searchCriteria = HelperService.getUserSearchCriteria(param);
         Set<Event> events = eventRepository.findAll(searchCriteria, page).toSet();
         return helper.getEventShortDtoList(events, param.getOnlyAvailable() == null ? false : param.getOnlyAvailable());
     }

@@ -29,7 +29,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     private final CompilationMapper mapper;
 
-    private final EventUtils helper;
+    private final HelperService helper;
 
     @Override
     @Transactional
