@@ -118,7 +118,7 @@ public class EventServiceImpl implements EventService {
         PageRequest page = HelperService.getUserSearchPage(param);
         Predicate searchCriteria = HelperService.getUserSearchCriteria(param);
         Set<Event> events = eventRepository.findAll(searchCriteria, page).toSet();
-        return helper.getEventShortDtoList(events, param.getOnlyAvailable() == null ? false : param.getOnlyAvailable());
+        return helper.getEventShortDtoList(events, param.getOnlyAvailable() != null && param.getOnlyAvailable());
     }
 
     @Override
