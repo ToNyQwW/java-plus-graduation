@@ -2,6 +2,16 @@ spring:
   application:
     name: discovery-server
 
+  cloud:
+    loadbalancer:
+      service-discovery:
+        timeout: 2
+      eager-load:
+        clients:
+          - comment-service
+          - event-service
+          - gateway-server
+
 server:
   port: 8761
 
