@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mapper.CommentMapper;
 import ru.practicum.model.Comment;
 import ru.practicum.repository.CommentRepository;
-import ru.practicum.internal.UserClientInternal;
+import ru.practicum.client.internal.UserClientInternal;
 import ru.practicum.dto.comment.*;
 import ru.practicum.dto.user.UserShortDto;
 import ru.practicum.enums.CommentStatus;

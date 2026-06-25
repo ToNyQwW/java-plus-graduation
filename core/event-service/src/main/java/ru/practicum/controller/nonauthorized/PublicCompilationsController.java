@@ -3,7 +3,7 @@ package ru.practicum.controller.nonauthorized;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.common.nonauthorized.CompilationClientNonauthorized;
+import ru.practicum.client.common.nonauthorized.CompilationClientNonauthorized;
 import ru.practicum.service.CompilationService;
 import ru.practicum.dto.compilation.CompilationDto;
 
@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/compilations")
 public class PublicCompilationsController implements CompilationClientNonauthorized {
+
     private final CompilationService service;
 
     @GetMapping

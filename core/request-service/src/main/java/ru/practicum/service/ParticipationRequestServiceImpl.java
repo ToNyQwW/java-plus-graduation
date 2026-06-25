@@ -1,13 +1,13 @@
 package ru.practicum.service;
 
+import com.google.protobuf.Timestamp;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.mapper.ParticipationRequestMapper;
-import ru.practicum.model.ParticipationRequest;
-import ru.practicum.repository.ParticipationRequestRepository;
-import ru.practicum.internal.EventClientInternal;
-import ru.practicum.internal.UserClientInternal;
+import ru.practicum.CollectorClient;
+import ru.practicum.client.internal.EventClientInternal;
+import ru.practicum.client.internal.UserClientInternal;
 import ru.practicum.dto.event.EventInternalDto;
 import ru.practicum.dto.event.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.event.EventRequestStatusUpdateResult;
@@ -15,22 +15,33 @@ import ru.practicum.dto.participation.ParticipationRequestDto;
 import ru.practicum.dto.user.UserShortDto;
 import ru.practicum.enums.EventState;
 import ru.practicum.enums.ParticipationRequestStatus;
+import ru.practicum.ewm.stats.proto.ActionTypeProto;
+import ru.practicum.ewm.stats.proto.UserActionProto;
 import ru.practicum.exception.ConditionsConflictException;
+import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.mapper.ParticipationRequestMapper;
+import ru.practicum.model.ParticipationRequest;
+import ru.practicum.repository.ParticipationRequestRepository;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
-    private final ParticipationRequestMapper mapper;
     private final ParticipationRequestRepository requestRepository;
 
     private final UserClientInternal userClient;
     private final EventClientInternal eventClient;
+
+    private final CollectorClient collectorClient;
+
+    private final ParticipationRequestMapper mapper;
 
     @Override
     @Transactional
@@ -38,10 +49,21 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         EventInternalDto event = eventClient.getEventByIdInternal(eventId);
         ParticipationRequest request = createParticipationRequest(userId, event);
 
+        if (event.getParticipantLimit() != 0 &&
+                requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED)
+                        >= event.getParticipantLimit()) {
+            throw new ConflictException("Достигнут лимит по количеству участников события с id=" + eventId);
+        }
+
         if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(ParticipationRequestStatus.CONFIRMED);
         }
-        return mapper.mapToParticipationRequestDto(requestRepository.save(request));
+
+        request = requestRepository.save(request);
+
+        sendRegisterAction(userId, eventId);
+
+        return mapper.mapToParticipationRequestDto(request);
     }
 
     @Override
@@ -83,8 +105,8 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             return new EventRequestStatusUpdateResult(Collections.emptyList(), Collections.emptyList());
         }
 
-        int confirmedRequests = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
-        int possibleToConfirmCount = event.getParticipantLimit() - confirmedRequests;
+        long confirmedRequests = requestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED);
+        long possibleToConfirmCount = event.getParticipantLimit() - confirmedRequests;
 
         if (status == ParticipationRequestStatus.CONFIRMED && possibleToConfirmCount == 0) {
             throw new ConditionsConflictException("Достигнут лимит на участие у события");
@@ -197,10 +219,29 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                     " уже подавал заявку на участие в событии id " + event.getId());
         }
 
-        int confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), ParticipationRequestStatus.CONFIRMED);
+        long confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), ParticipationRequestStatus.CONFIRMED);
 
         if (event.getParticipantLimit() > 0 && event.getParticipantLimit() == confirmedRequests) {
             throw new ConditionsConflictException("Достигнут лимит на участие у события");
+        }
+    }
+
+    private void sendRegisterAction(Long userId, Long eventId) {
+        try {
+            UserActionProto action = UserActionProto.newBuilder()
+                    .setUserId(userId)
+                    .setEventId(eventId)
+                    .setActionType(ActionTypeProto.REGISTER)
+                    .setTimestamp(Timestamp.newBuilder()
+                            .setSeconds(Instant.now().getEpochSecond())
+                            .setNanos(Instant.now().getNano())
+                            .build())
+                    .build();
+
+            collectorClient.sendUserAction(userId, eventId, action);
+            log.debug("Отправлена регистрация в Collector: userId={}, eventId={}", userId, eventId);
+        } catch (Exception e) {
+            log.error("Ошибка отправки регистрации в Collector: {}", e.getMessage(), e);
         }
     }
 }

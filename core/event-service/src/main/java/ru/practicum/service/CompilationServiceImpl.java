@@ -24,12 +24,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
 
-    private final CompilationRepository repository;
     private final EventRepository eventRepository;
+    private final CompilationRepository repository;
 
     private final CompilationMapper mapper;
-
-    private final HelperService helper;
+    private final HelperService helperService;
 
     @Override
     @Transactional
@@ -46,7 +45,7 @@ public class CompilationServiceImpl implements CompilationService {
         Set<Event> events = getEvents(dto.getEvents());
         Compilation compilation = mapper.mapNewCompilationDtoToCompilation(dto, events);
         compilation = repository.save(compilation);
-        List<EventShortDto> getEventShortDtoList = helper.getEventShortDtoList(events, false);
+        List<EventShortDto> getEventShortDtoList = helperService.getEventShortDtoList(events, false);
         return mapper.mapCompilationToCompilationDto(compilation, getEventShortDtoList);
     }
 
@@ -57,7 +56,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .orElseThrow(() -> new NotFoundException("Подборка с id " + compId + " не найдена"));
         updateCompilationFields(compilation, updateRequest);
         compilation = repository.save(compilation);
-        List<EventShortDto> getEventShortDtoList = helper.getEventShortDtoList(compilation.getEvents(), false);
+        List<EventShortDto> getEventShortDtoList = helperService.getEventShortDtoList(compilation.getEvents(), false);
         return mapper.mapCompilationToCompilationDto(compilation, getEventShortDtoList);
     }
 
@@ -72,7 +71,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto getCompilationById(Long compId) {
         Compilation compilation = repository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Подборка с id " + compId + " не найдена"));
-        List<EventShortDto> eventShortDtoList = helper.getEventShortDtoList(compilation.getEvents(), false);
+        List<EventShortDto> eventShortDtoList = helperService.getEventShortDtoList(compilation.getEvents(), false);
         return mapper.mapCompilationToCompilationDto(compilation, eventShortDtoList);
     }
 
@@ -120,7 +119,7 @@ public class CompilationServiceImpl implements CompilationService {
             events.addAll(compilation.getEvents());
         }
 
-        List<EventShortDto> eventShortDtoList = helper.getEventShortDtoList(events, false);
+        List<EventShortDto> eventShortDtoList = helperService.getEventShortDtoList(events, false);
         Map<Long, EventShortDto> eventIdDtoMap = eventShortDtoList.stream()
                 .collect(Collectors.toMap(EventShortDto::getId, Function.identity()));
         List<CompilationDto> compilationDtos = new ArrayList<>();

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.common.event.admin.CompilationClientAdmin;
+import ru.practicum.client.common.event.admin.CompilationClientAdmin;
 import ru.practicum.service.CompilationService;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.dto.compilation.NewCompilationDto;
@@ -16,6 +16,7 @@ import ru.practicum.dto.compilation.UpdateCompilationRequest;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/compilations")
 public class AdminCompilationController implements CompilationClientAdmin {
+
     private final CompilationService service;
 
     @DeleteMapping("/{compId}")

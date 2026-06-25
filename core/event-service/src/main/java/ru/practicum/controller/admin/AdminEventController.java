@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.common.event.admin.EventClientAdmin;
+import ru.practicum.client.common.event.admin.EventClientAdmin;
 import ru.practicum.service.EventService;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventSearchRequestAdmin;
@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/events")
 public class AdminEventController implements EventClientAdmin {
+
     private final EventService eventService;
 
     @GetMapping

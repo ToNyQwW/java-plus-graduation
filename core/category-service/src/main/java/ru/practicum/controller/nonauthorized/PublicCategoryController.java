@@ -3,7 +3,7 @@ package ru.practicum.controller.nonauthorized;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.common.category.CategoryClientNonauthorized;
+import ru.practicum.client.common.category.CategoryClientNonauthorized;
 import ru.practicum.service.CategoryService;
 import ru.practicum.dto.category.CategoryDto;
 

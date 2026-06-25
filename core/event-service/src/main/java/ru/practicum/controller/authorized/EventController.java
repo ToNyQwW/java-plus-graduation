@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.common.event.authorized.EventClientAuthorized;
-import ru.practicum.dto.event.*;
+import ru.practicum.client.common.event.authorized.EventClientAuthorized;
 import ru.practicum.service.EventService;
+import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.dto.event.NewEventDto;
+import ru.practicum.dto.event.UpdateEventUserRequest;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/users/{userId}/events")
 public class EventController implements EventClientAuthorized {
+
     private final EventService eventService;
 
     @PostMapping
@@ -31,14 +35,7 @@ public class EventController implements EventClientAuthorized {
                                      @PathVariable Long eventId,
                                      @Valid @RequestBody UpdateEventUserRequest request) {
         log.info("Пользователь с id {}, обновил событие с id {}", userId, eventId);
-
-        EventUpdateCommand command = EventUpdateCommand.builder()
-                .userId(userId)
-                .eventId(eventId)
-                .request(request)
-                .build();
-
-        return eventService.updateByUser(command);
+        return eventService.updateByUser(userId, eventId, request);
     }
 
     @GetMapping("/{eventId}")
