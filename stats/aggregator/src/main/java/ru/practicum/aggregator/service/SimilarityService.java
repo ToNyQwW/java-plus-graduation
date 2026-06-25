@@ -69,7 +69,7 @@ public class SimilarityService {
 
     private double getWeight(ActionTypeAvro actionType) {
         return switch (actionType) {
-            case VIEW -> ActionTypeWeight.ACTION_LIKE_WEIGHT;
+            case VIEW -> ActionTypeWeight.ACTION_VIEW_WEIGHT;
             case REGISTER -> ActionTypeWeight.ACTION_REGISTER_WEIGHT;
             case LIKE -> ActionTypeWeight.ACTION_LIKE_WEIGHT;
         };
