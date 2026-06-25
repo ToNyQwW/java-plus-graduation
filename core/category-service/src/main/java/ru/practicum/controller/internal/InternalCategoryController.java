@@ -3,7 +3,7 @@ package ru.practicum.controller.internal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.internal.CategoryClientInternal;
+import ru.practicum.internal.CategoryClientInternal;
 import ru.practicum.service.CategoryService;
 import ru.practicum.dto.category.CategoryDto;
 

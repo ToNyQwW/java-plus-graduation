@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.common.user.UserClient;
+import ru.practicum.common.user.UserClient;
 import ru.practicum.service.UserService;
 import ru.practicum.dto.user.NewUserRequest;
 import ru.practicum.dto.user.UserDto;

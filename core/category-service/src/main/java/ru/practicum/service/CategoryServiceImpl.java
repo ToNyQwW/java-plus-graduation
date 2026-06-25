@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.mapper.CategoryMapper;
 import ru.practicum.model.Category;
 import ru.practicum.repository.CategoryRepository;
-import ru.practicum.client.internal.EventClientInternal;
+import ru.practicum.internal.EventClientInternal;
 import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.category.NewCategoryDto;
 import ru.practicum.dto.event.EventInternalDto;

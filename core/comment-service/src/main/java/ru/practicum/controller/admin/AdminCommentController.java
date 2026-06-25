@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.common.comment.CommentClientAdmin;
+import ru.practicum.common.comment.CommentClientAdmin;
 import ru.practicum.service.CommentService;
 import ru.practicum.dto.comment.CommentDtoAdmin;
 import ru.practicum.dto.comment.CommentSearchRequestAdmin;

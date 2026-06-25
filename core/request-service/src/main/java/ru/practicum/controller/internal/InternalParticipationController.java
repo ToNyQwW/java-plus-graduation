@@ -3,7 +3,7 @@ package ru.practicum.controller.internal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.internal.RequestClientInternal;
+import ru.practicum.internal.RequestClientInternal;
 import ru.practicum.service.ParticipationRequestService;
 
 import java.util.Map;

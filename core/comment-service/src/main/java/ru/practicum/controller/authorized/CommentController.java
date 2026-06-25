@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.common.comment.CommentClientAuthorized;
+import ru.practicum.common.comment.CommentClientAuthorized;
 import ru.practicum.service.CommentService;
 import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.comment.NewCommentDto;

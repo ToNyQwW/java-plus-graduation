@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.UserService;
-import ru.practicum.client.internal.UserClientInternal;
+import ru.practicum.internal.UserClientInternal;
 import ru.practicum.dto.user.UserShortDto;
 
 import java.util.List;

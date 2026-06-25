@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.common.event.authorized.EventClientAuthorized;
+import ru.practicum.common.event.authorized.EventClientAuthorized;
 import ru.practicum.dto.event.*;
 import ru.practicum.service.EventService;
 
