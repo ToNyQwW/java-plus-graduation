@@ -20,6 +20,7 @@
         <module>stats-client</module>
         <module>collector</module>
         <module>serialization</module>
+        <module>common</module>
     </modules>
 
     <properties>
