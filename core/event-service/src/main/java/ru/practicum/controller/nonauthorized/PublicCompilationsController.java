@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/compilations")
 public class PublicCompilationsController implements CompilationClientNonauthorized {
+
     private final CompilationService service;
 
     @GetMapping

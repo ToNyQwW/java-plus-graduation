@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS events
     request_moderation BOOLEAN,
     state              VARCHAR(100)                NOT NULL,
     title              VARCHAR(120)                NOT NULL,
+    rating             DOUBLE PRECISION            NOT NULL,
     CONSTRAINT fk_events_to_locations FOREIGN KEY (location_id) REFERENCES locations (id)
 );
 

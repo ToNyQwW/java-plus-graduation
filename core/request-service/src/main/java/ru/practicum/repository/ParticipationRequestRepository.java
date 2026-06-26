@@ -3,8 +3,8 @@ package ru.practicum.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.model.ParticipationRequest;
 import ru.practicum.enums.ParticipationRequestStatus;
+import ru.practicum.model.ParticipationRequest;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
-
     Optional<ParticipationRequest> getByIdAndRequesterId(Long requestId, Long userId);
 
     List<ParticipationRequest> findAllByRequesterId(Long userId);
@@ -21,7 +20,7 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
 
     List<ParticipationRequest> findAllByEventId(Long eventId);
 
-    int countByEventIdAndStatus(Long eventId, ParticipationRequestStatus requestStatus);
+    long countByEventIdAndStatus(Long eventId, ParticipationRequestStatus requestStatus);
 
     boolean existsByEventIdAndRequesterId(Long eventId, Long requesterId);
 

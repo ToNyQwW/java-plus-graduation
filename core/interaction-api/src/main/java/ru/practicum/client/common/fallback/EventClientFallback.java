@@ -3,15 +3,18 @@ package ru.practicum.client.common.fallback;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestHeader;
 import ru.practicum.client.common.event.admin.EventClientAdmin;
 import ru.practicum.client.common.event.authorized.EventClientAuthorized;
 import ru.practicum.client.common.nonauthorized.EventClientNonauthorized;
 import ru.practicum.dto.event.*;
 import ru.practicum.enums.EventState;
+import ru.practicum.ewm.stats.proto.RecommendedEventProto;
 import ru.practicum.exception.FeignClientUnavailableException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -56,7 +59,7 @@ public class EventClientFallback implements EventClientAdmin, EventClientAuthori
     }
 
     @Override
-    public EventFullDto getEvent(Long id, HttpServletRequest request) {
+    public EventFullDto getEvent(Long id, HttpServletRequest request, @RequestHeader("X-EWM-USER-ID") Long userId) {
         logError();
         throw new FeignClientUnavailableException("Сервис временно недоступен");
     }
@@ -66,6 +69,18 @@ public class EventClientFallback implements EventClientAdmin, EventClientAuthori
                                              Boolean paid, LocalDateTime rangeStart,
                                              LocalDateTime rangeEnd, Boolean onlyAvailable,
                                              String sort, Integer from, Integer size, HttpServletRequest request) {
+        logError();
+        throw new FeignClientUnavailableException("Сервис временно недоступен");
+    }
+
+    @Override
+    public Stream<RecommendedEventProto> getRecommendations(Long userId, int maxResults) {
+        logError();
+        throw new FeignClientUnavailableException("Сервис временно недоступен");
+    }
+
+    @Override
+    public void likeEvent(Long eventId, Long userId) {
         logError();
         throw new FeignClientUnavailableException("Сервис временно недоступен");
     }

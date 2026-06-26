@@ -2,8 +2,6 @@ package ru.practicum.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.mapstruct.factory.Mappers;
-import ru.practicum.model.Event;
-import ru.practicum.service.EventServiceImpl;
 import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.event.EventFullDto;
@@ -12,6 +10,8 @@ import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.dto.user.UserShortDto;
 import ru.practicum.enums.EventState;
+import ru.practicum.model.Event;
+import ru.practicum.service.EventServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +43,7 @@ public class EventMapper {
     public static EventFullDto mapToFullDto(Event event,
                                             UserShortDto initiator,
                                             CategoryDto categoryDto,
-                                            Long views,
+                                            Double rating,
                                             Long confirmedRequests,
                                             List<CommentDto> commentDtoList) {
         EventFullDto fullDto = new EventFullDto();
@@ -61,16 +61,17 @@ public class EventMapper {
         fullDto.setRequestModeration(event.getRequestModeration());
         fullDto.setState(event.getState());
         fullDto.setTitle(event.getTitle());
-        fullDto.setViews(views);
+        fullDto.setRating(rating);
         fullDto.setConfirmedRequests(confirmedRequests);
         fullDto.setComments(commentDtoList);
         return fullDto;
     }
 
+
     public static EventShortDto mapToShortDto(Event event,
                                               UserShortDto initiator,
                                               CategoryDto categoryDto,
-                                              Long views,
+                                              Double rating,
                                               Long confirmedRequests,
                                               List<CommentDto> commentDtoList) {
         EventShortDto shortDto = new EventShortDto();
@@ -82,7 +83,7 @@ public class EventMapper {
         shortDto.setInitiator(initiator);
         shortDto.setPaid(event.isPaid());
         shortDto.setTitle(event.getTitle());
-        shortDto.setViews(views);
+        shortDto.setRating(rating);
         shortDto.setConfirmedRequests(confirmedRequests);
         shortDto.setComments(commentDtoList);
 

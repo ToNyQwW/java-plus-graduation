@@ -16,6 +16,7 @@ import ru.practicum.dto.compilation.UpdateCompilationRequest;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/compilations")
 public class AdminCompilationController implements CompilationClientAdmin {
+
     private final CompilationService service;
 
     @DeleteMapping("/{compId}")

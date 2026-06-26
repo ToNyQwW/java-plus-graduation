@@ -7,19 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.NewEndpointHitDto;
-import ru.practicum.client.StatClient;
 import ru.practicum.client.common.nonauthorized.EventClientNonauthorized;
-import ru.practicum.service.EventService;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventSearchRequestUser;
 import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.ewm.stats.proto.RecommendedEventProto;
 import ru.practicum.exception.FeignClientUnavailableException;
+import ru.practicum.service.EventService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static ru.practicum.service.EventServiceImpl.DATE_TIME_FORMATTER;
+import java.util.stream.Stream;
 
 @Slf4j
 @RestController
@@ -27,31 +25,14 @@ import static ru.practicum.service.EventServiceImpl.DATE_TIME_FORMATTER;
 @RequestMapping(path = "/events")
 public class PublicEventController implements EventClientNonauthorized {
 
-    private static final String APP_NAME = "main-service";
     private final EventService eventService;
-    private final StatClient statsClient;
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
+    public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request,
+                                 @RequestHeader("X-EWM-USER-ID") Long userId) {
         log.info("Получение информации о событии {}", id);
-
-        NewEndpointHitDto hitDto = new NewEndpointHitDto(
-                APP_NAME,
-                request.getRequestURI(),
-                request.getRemoteAddr(),
-                LocalDateTime.now().format(DATE_TIME_FORMATTER)
-        );
-
-        try {
-            log.info("Добавление события getEvent в сервис статистики с dto={}", hitDto);
-            statsClient.hit(hitDto);
-            log.info("Добавление события getEvent в сервис статистики завершено успешно");
-            return eventService.getPublicEvent(id);
-        } catch (FeignException e) {
-            log.error("Ошибка feign-клиента сервиса статистики: {}", e.getMessage());
-            throw new FeignClientUnavailableException(e.getMessage());
-        }
+        return eventService.getPublicEvent(id, request.getRemoteAddr(), userId);
     }
 
     @GetMapping
@@ -74,17 +55,31 @@ public class PublicEventController implements EventClientNonauthorized {
 
         List<EventShortDto> resp = eventService.searchForUser(param);
 
-        NewEndpointHitDto hitDto = new NewEndpointHitDto(APP_NAME, request.getRequestURI(),
-                request.getRemoteAddr(), LocalDateTime.now().format(DATE_TIME_FORMATTER));
-
         try {
-            log.info("Добавление события в сервис статистики с dto={}", hitDto);
-            statsClient.hit(hitDto);
             log.info("Добавление события getEvent в сервис статистики завершено успешно");
             return resp;
         } catch (FeignException e) {
             log.error("Ошибка feign-клиента сервиса статистики: {}", e.getMessage());
             throw new FeignClientUnavailableException(e.getMessage());
         }
+    }
+
+    @GetMapping("/recommendations")
+    public Stream<RecommendedEventProto> getRecommendations(
+            @RequestHeader("X-EWM-USER-ID") Long userId,
+            @RequestParam(defaultValue = "10") int maxResults) {
+
+        log.debug("Controller: getRecommendations userId={}, maxResults={}", userId, maxResults);
+        return eventService.getRecommendationsForUser(userId, maxResults);
+    }
+
+    @PutMapping("/{eventId}/like")
+    @ResponseStatus(HttpStatus.OK)
+    public void likeEvent(
+            @PathVariable Long eventId,
+            @RequestHeader("X-EWM-USER-ID") Long userId) {
+
+        log.debug("Controller: likeEvent eventId={}, userId={}", eventId, userId);
+        eventService.likeEvent(userId, eventId);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.client.config.FeignCustomConfig;
 import ru.practicum.client.internal.fallback.RequestClientFallbackInternal;
+import ru.practicum.enums.ParticipationRequestStatus;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,8 @@ import java.util.Set;
         fallback = RequestClientFallbackInternal.class,
         configuration = FeignCustomConfig.class)
 public interface RequestClientInternal {
+    @GetMapping("/event/{eventId}/count/{status}")
+    Long countByStatus(@PathVariable Long eventId, @PathVariable ParticipationRequestStatus status);
 
     @GetMapping("/{eventId}/confirmed")
     Long getConfirmedRequestsCount(@PathVariable Long eventId);
