@@ -1,9 +1,11 @@
 package ru.practicum.analyzer.processor;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -27,6 +29,12 @@ public class AnalyzerKafkaConsumerRunner implements ApplicationRunner {
 
     private final Duration kafkaPollTimeout;
 
+    @PreDestroy
+    public void shutdown() {
+        userActionConsumer.wakeup();
+        eventSimilarityConsumer.wakeup();
+    }
+
     @Override
     public void run(ApplicationArguments args) {
         Thread userActionsThread = new Thread(this::pollUserActions, "analyzer-user-actions-consumer");
@@ -38,24 +46,40 @@ public class AnalyzerKafkaConsumerRunner implements ApplicationRunner {
     }
 
     private void pollUserActions() {
-        while (!Thread.currentThread().isInterrupted()) {
-            try {
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<Long, UserActionAvro> records = userActionConsumer.poll(kafkaPollTimeout);
-                records.forEach(record -> userInteractionService.save(record.value()));
-            } catch (Exception e) {
-                log.error("Ошибка обработки действий пользователей в Analyzer", e);
+
+                if (!records.isEmpty()) {
+                    records.forEach(record -> userInteractionService.save(record.value()));
+
+                    userActionConsumer.commitSync();
+                }
             }
+        } catch (WakeupException ignored) {
+        } catch (Exception e) {
+            log.error("Ошибка обработки действий пользователей в Analyzer", e);
+        } finally {
+            userActionConsumer.close();
         }
     }
 
     private void pollEventSimilarities() {
-        while (!Thread.currentThread().isInterrupted()) {
-            try {
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<Long, EventSimilarityAvro> records = eventSimilarityConsumer.poll(kafkaPollTimeout);
-                records.forEach(record -> eventSimilarityService.save(record.value()));
-            } catch (Exception e) {
-                log.error("Ошибка обработки сходства мероприятий в Analyzer", e);
+
+                if (!records.isEmpty()) {
+                    records.forEach(record -> eventSimilarityService.save(record.value()));
+
+                    eventSimilarityConsumer.commitSync();
+                }
             }
+        } catch (WakeupException ignored) {
+        } catch (Exception e) {
+            log.error("Ошибка обработки сходства мероприятий в Analyzer", e);
+        } finally {
+            eventSimilarityConsumer.close();
         }
     }
 }
