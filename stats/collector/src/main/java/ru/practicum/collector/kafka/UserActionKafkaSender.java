@@ -1,5 +1,6 @@
 package ru.practicum.collector.kafka;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -19,6 +20,16 @@ public class UserActionKafkaSender {
     @Value("${collector.kafka.topics.user-actions}")
     private String userActionsTopic;
 
+    @PreDestroy
+    public void shutdown() {
+        try {
+            producer.flush();
+            producer.close();
+        } catch (Exception e) {
+            log.warn("Ошибка при закрытии Kafka producer", e);
+        }
+    }
+
     public void send(UserActionAvro action) {
         ProducerRecord<Long, UserActionAvro> record = new ProducerRecord<>(
                 userActionsTopic,
@@ -28,6 +39,8 @@ public class UserActionKafkaSender {
 
         try {
             var metadata = producer.send(record).get();
+            producer.flush();
+
             log.info("Действие пользователя отправлено на topic {}, partition {}, offset {}",
                     metadata.topic(), metadata.partition(), metadata.offset());
         } catch (InterruptedException e) {
